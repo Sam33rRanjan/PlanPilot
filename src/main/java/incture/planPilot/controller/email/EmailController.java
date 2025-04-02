@@ -1,4 +1,4 @@
-package incture.planPilot.controller;
+package incture.planPilot.controller.email;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
