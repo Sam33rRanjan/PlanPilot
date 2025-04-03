@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import incture.planPilot.dto.TaskDto;
 import incture.planPilot.entity.User;
+import incture.planPilot.service.notification.NotificationService;
 import incture.planPilot.service.user.UserService;
 import incture.planPilot.util.JwtUtil;
 
@@ -27,6 +28,8 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private JwtUtil jwtUtil;
+	@Autowired
+	private NotificationService notificationService;
 	
 	@PostMapping("/addTask")
 	public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto) {
@@ -42,6 +45,20 @@ public class UserController {
 	public ResponseEntity<?> getTasks() {
 		User loggedInUser = jwtUtil.getLoggedInUser();
 		List<TaskDto> tasks = userService.getTasksByUserId(loggedInUser.getId());
+		return ResponseEntity.status(HttpStatus.OK).body(tasks);		
+	}
+	
+	@GetMapping("/getTasksSortedByDueDate")
+	public ResponseEntity<?> getTasksSortedByDueDate() {
+		User loggedInUser = jwtUtil.getLoggedInUser();
+		List<TaskDto> tasks = userService.getTasksByUserIdSortedByDueDate(loggedInUser.getId());
+		return ResponseEntity.status(HttpStatus.OK).body(tasks);
+	}
+	
+	@GetMapping("/getTasksSortedByPriority")
+	public ResponseEntity<?> getTasksSortedByPriority() {
+		User loggedInUser = jwtUtil.getLoggedInUser();
+		List<TaskDto> tasks = userService.getTasksByUserIdSortedByPriority(loggedInUser.getId());
 		return ResponseEntity.status(HttpStatus.OK).body(tasks);		
 	}
 	
@@ -75,10 +92,10 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task could not be updated");	
 	}
 	
-	@GetMapping("/searchTasks/{body}")
-	public ResponseEntity<?> searchTasks(@PathVariable String body) {
+	@GetMapping("/searchTask/{searchString}")
+	public ResponseEntity<?> searchTasks(@PathVariable String searchString) {
 		User loggedInUser = jwtUtil.getLoggedInUser();
-		List<TaskDto> tasks = userService.searchTasks(loggedInUser,body);
+		List<TaskDto> tasks = userService.searchTasks(loggedInUser,searchString);
 		return ResponseEntity.status(HttpStatus.OK).body(tasks);			
 	}
 	
@@ -94,6 +111,28 @@ public class UserController {
 		User loggedInUser = jwtUtil.getLoggedInUser();
 		List<TaskDto> tasks = userService.filterTaskByStatus(loggedInUser,status);
 		return ResponseEntity.status(HttpStatus.OK).body(tasks);
+	}
+	
+	@GetMapping("/getDashboard")
+	public ResponseEntity<?> getDashboard() {
+		User loggedInUser = jwtUtil.getLoggedInUser();
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getDashboardForUser(loggedInUser));
+	}
+	
+	@GetMapping("/notifications")
+	public ResponseEntity<?> getNotifications() {
+		User loggedInUser = jwtUtil.getLoggedInUser();
+		return ResponseEntity.status(HttpStatus.OK).body(notificationService.getNotificationsByUserId(loggedInUser.getId()));
+	}
+	
+	@PutMapping("/markNotificationAsRead/{notificationId}")
+	public ResponseEntity<?> markNotificationAsRead(@PathVariable long notificationId) {
+		User loggedInUser = jwtUtil.getLoggedInUser();
+		String response = notificationService.markNotificationAsRead(loggedInUser,notificationId);
+		if(response != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(response);
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Notification could not be marked as read");		
 	}
 	
 }

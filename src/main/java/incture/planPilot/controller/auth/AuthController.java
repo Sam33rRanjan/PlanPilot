@@ -55,14 +55,14 @@ public class AuthController {
 	}
 	
 	@PostMapping("/login")
-	public LoginResponse login(@RequestBody LoginRequest authenticationRequest) {
+	public LoginResponse login(@RequestBody LoginRequest loginRequest) {
 		try {
-			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 		} catch (BadCredentialsException e) {
 			throw new BadCredentialsException("Incorrect username or password");
 		}
-		final UserDetails userDetails = jwtService.userDetailsService().loadUserByUsername(authenticationRequest.getEmail());
-		Optional<User> user = userRepository.findByEmail(authenticationRequest.getEmail());
+		final UserDetails userDetails = jwtService.userDetailsService().loadUserByUsername(loginRequest.getEmail());
+		Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
 		final String jwt = jwtUtil.generateToken(userDetails);
 		LoginResponse authenticationResponse = new LoginResponse();
 		if(user.isPresent()) {

@@ -18,8 +18,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Data;
 
 @Entity
+@Data
 public class User implements UserDetails{
 	
 	private static final long serialVersionUID = 1L;
@@ -36,30 +38,8 @@ public class User implements UserDetails{
 	private UserRole userRole = UserRole.USER;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Task> tasks;
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	public void setUserRole(UserRole userRole) {
-		this.userRole = userRole;
-	}
-	
-	public long getId() {
-		return id;
-	}
-	
-	public String getEmail() {
-		return email;
-	}
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Notification> notifications;
 	
 	@Override
 	public String getUsername() {
@@ -69,20 +49,6 @@ public class User implements UserDetails{
 	@Override
 	public String getPassword() {
 		return password;
-	}
-	
-	public UserRole getUserRole() {
-		return userRole;
-	}
-	
-	public UserDto getUserDto() {
-		UserDto userDto = new UserDto();
-		userDto.setId(this.id);
-		userDto.setUsername(this.username);
-		userDto.setEmail(this.email);
-		userDto.setPassword(this.password);
-		userDto.setUserRole(this.userRole);
-		return userDto;
 	}
 	
 	@Override
@@ -109,10 +75,6 @@ public class User implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
-
-	public List<Task> getTasks() {
-		return tasks;
-	}
 	
 	public Task addTask(Task task) {
 		tasks.add(task);
@@ -123,6 +85,16 @@ public class User implements UserDetails{
 		Task task = tasks.stream().filter(t -> t.getId() == taskId).findFirst().get();
 		tasks.remove(task);
 		return task;
+	}
+	
+	public UserDto getUserDto() {
+		UserDto userDto = new UserDto();
+		userDto.setId(this.id);
+		userDto.setUsername(this.username);
+		userDto.setEmail(this.email);
+		userDto.setPassword(this.password);
+		userDto.setUserRole(this.userRole);
+		return userDto;
 	}
 	
 }

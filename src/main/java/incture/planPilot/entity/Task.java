@@ -1,6 +1,7 @@
 package incture.planPilot.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import incture.planPilot.dto.TaskDto;
 import incture.planPilot.enums.TaskPriority;
 import incture.planPilot.enums.TaskStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,8 +18,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import lombok.Data;
 
 @Entity
+@Data
 public class Task {
 	
 	@Id
@@ -35,62 +40,11 @@ public class Task {
 	@JoinColumn(name = "user_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
+	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Notification> notifications;
 	
-	public void setId(long id) {
-		this.id = id;
-	}
+	private boolean reminderSent = false;
 	
-	public long getId() {
-		return id;
-	}
-	
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	
-	public String getTitle() {
-		return title;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
-	
-	public Date getDueDate() {
-		return dueDate;
-	}
-	
-	public void setPriority(TaskPriority priority) {
-		this.priority = priority;
-	}
-	
-	public TaskPriority getPriority() {
-		return priority;
-	}
-	
-	public void setStatus(TaskStatus status) {
-		this.status = status;
-	}
-	
-	public TaskStatus getStatus() {
-		return status;
-	}
-	
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-	public User getUser() {
-		return user;
-	}
 	
 	public TaskDto getTaskDto() {
 		TaskDto taskDto = new TaskDto();
@@ -102,6 +56,7 @@ public class Task {
 		taskDto.setStatus(this.status);
 		taskDto.setUserId(this.user.getId());
 		taskDto.setUserName(this.user.getUsername());
+		taskDto.setReminderSent(this.reminderSent);
 		return taskDto;
 	}
 	
