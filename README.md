@@ -36,7 +36,7 @@ Before you begin, ensure you have the following installed:
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/Sam33rRanjan/PlanPilot.git](https://github.com/Sam33rRanjan/PlanPilot.git)
+    git clone https://github.com/Sam33rRanjan/PlanPilot.git
     ```
 
 2.  **Import the Project into Eclipse:**
