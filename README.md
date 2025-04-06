@@ -24,9 +24,9 @@ Plan Pilot is a robust and efficient task management system designed to streamli
 
 Before you begin, ensure you have the following installed:
 
-- **Java 21:** [Download Java 21](https://www.oracle.com/java/technologies/javase-jdk21-archive-downloads.html)
+- **Java 21:** [Download Java 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 - **MySQL 8:** [Download MySQL 8](https://dev.mysql.com/downloads/mysql/)
-- **Eclipse Enterprise Edition IDE:** [Download Eclipse EE](https://www.eclipse.org/downloads/packages/release/2023-12/r/eclipse-ide-enterprise-java-and-web-developers)
+- **Eclipse IDE for Enterprise Java and Web Developers:** [Download Eclipse EE](https://www.eclipse.org/downloads/packages/)
 - **Git:** [Download Git](https://git-scm.com/downloads)
 - **Maven Integration for Eclipse:** Install from Eclipse Marketplace.
 - **Spring Tools (Spring Tool Suite):** Install from Eclipse Marketplace.
