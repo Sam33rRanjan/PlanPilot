@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overdue Task Reminder</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #d3f5f3;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #41484b;
+            text-align: center;
+        }
+        p {
+            color: #292727;
+        }
+        .task-details {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #fffefe;
+        }
+        .task-details strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .task-details span {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #00B4B6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .button:hover{
+          background-color: #00878a;
+          transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align: center;">
+            <img src="cid:logo.png" alt="logo" >
+        </div>
+
+        <h1>Overdue Task Reminder</h1>
+        <p>Hello {User},</p>
+        <p>This is a friendly reminder that the following task is already overdue:</p>
+
+        <div class="task-details">
+            <strong>Task Title:</strong>
+            <span id="taskTitle">{Title}</span>
+
+            <strong>Description:</strong>
+            <span id="taskDescription">{Description}</span>
+
+            <strong>Due Date:</strong>
+            <span id="dueDate">{Due Date}</span>
+
+            <strong>Priority:</strong>
+            <span id="priority">{Priority}</span>
+
+            <strong>Status:</strong>
+            <span id="assignedTo">{Status}</span>
+        </div>
+
+        <p>Please ensure you complete the task as soon as possible.</p>
+
+        <a href="https://tasks.google.com/tasks/" class="button" style="color: white;">View Task</a>
+
+        <p>Thank you,</p>
+        <p>PlanPoint Admin</p>
+    </div>
+
+</body>
+</html>

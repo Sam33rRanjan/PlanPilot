@@ -1,16 +1,13 @@
 package incture.planPilot.util;
 
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,19 +28,8 @@ public class JwtUtil {
 	private UserService userService;
 	
 	private String staticKey = "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
-	private String secretKey = "";
 	
-	public JwtUtil() {
-		KeyGenerator keyGen;
-		try {
-			keyGen = KeyGenerator.getInstance("HmacSHA256");
-			SecretKey sk = keyGen.generateKey();
-			secretKey = Base64.getEncoder().encodeToString(sk.getEncoded());
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException("Error generating secret key");
-		}
-		System.out.println("Secret Key for signingKey: " + secretKey);
-	}
+	private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 	
 	public String generateToken(UserDetails userDetails) {
 		return generateToken(new HashMap<>(), userDetails);
@@ -64,34 +50,64 @@ public class JwtUtil {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 	
-	public boolean isTokenValid(String token, UserDetails userDetails) throws Exception {
-		String username = extractUsername(token);
-		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+	public boolean isTokenValid(String token, UserDetails userDetails) {
+		try {
+			String username = extractUsername(token);
+			return username.equals(userDetails.getUsername()) && !isTokenExpired(token);			
+		} catch (Exception e) {
+			logger.error("Error validating token: " + e.getMessage());
+			return false;
+		}
 	}
 	
-	public String extractUsername(String token) throws Exception {
-		return extractClaims(token, Claims::getSubject);
+	public String extractUsername(String token) {
+		try {
+			return extractClaims(token, Claims::getSubject);			
+		} catch (Exception e) {
+			logger.error("Error extracting username: " + e.getMessage());
+			return null;
+		}
 	}
 	
-	public boolean isTokenExpired(String token) throws Exception {
-		return extractExpiration(token).before(new Date());
+	public boolean isTokenExpired(String token) {
+		try {
+			return extractExpiration(token).before(new Date());			
+		} catch (Exception e) {
+			logger.error("Error checking token expiration: " + e.getMessage());
+			return true;
+		}
 	}
 	
-	public Date extractExpiration(String token) throws Exception {
-		return extractClaims(token, Claims::getExpiration);
+	public Date extractExpiration(String token) {
+		try {
+			return extractClaims(token, Claims::getExpiration);			
+		} catch (Exception e) {
+			logger.error("Error extracting expiration date: " + e.getMessage());
+			return null;
+		}
 	}
 	
-	private <T> T extractClaims(String token, Function<Claims,T> claimsResolver) throws Exception {
-		Claims claims = extractAllClaims(token);
-		return claimsResolver.apply(claims);
+	private <T> T extractClaims(String token, Function<Claims,T> claimsResolver) {
+		try {
+			Claims claims = extractAllClaims(token);
+			return claimsResolver.apply(claims);			
+		} catch (Exception e) {
+			logger.error("Error extracting claims: " + e.getMessage());
+			return null;
+		}
 	}
 	
-	private Claims extractAllClaims(String token) throws Exception {
-		return Jwts.parserBuilder()
-				.setSigningKey(getSigningKey())
-				.build()
-				.parseClaimsJws(token)
-				.getBody();			
+	private Claims extractAllClaims(String token) {
+		try {
+			return Jwts.parserBuilder()
+					.setSigningKey(getSigningKey())
+					.build()
+					.parseClaimsJws(token)
+					.getBody();						
+		} catch (Exception e) {
+			logger.error("Error extracting all claims from token: " + e.getMessage());
+			return null;
+		}
 	}
 	
 	public User getLoggedInUser() {

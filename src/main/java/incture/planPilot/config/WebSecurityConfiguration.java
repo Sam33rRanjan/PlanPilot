@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import incture.planPilot.enums.UserRole;
@@ -33,8 +35,11 @@ public class WebSecurityConfiguration {
 	@Autowired
 	private JwtService jwtService;
 	
+	private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfiguration.class);
+	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		logger.debug("Configuring security filter chain");
 		http.csrf(AbstractHttpConfigurer::disable)
 			.authorizeHttpRequests(requests -> requests
 					.requestMatchers("/api/auth/**").permitAll()
@@ -53,11 +58,13 @@ public class WebSecurityConfiguration {
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
+		logger.debug("Creating password encoder");
 		return new BCryptPasswordEncoder();
 	}
 	
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
+		logger.debug("Creating authentication provider");
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(jwtService.userDetailsService());
 		authProvider.setPasswordEncoder(passwordEncoder());
@@ -66,6 +73,7 @@ public class WebSecurityConfiguration {
 	
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		logger.debug("Creating authentication manager");
 		return config.getAuthenticationManager();
 	}
 	

@@ -9,6 +9,8 @@ import incture.planPilot.entity.User;
 
 public interface UserService {
 	
+	String updateUser(User loggedInUser, String name, String email, String password);
+	
 	TaskDto createTask(User loggedInUser, TaskDto taskDto);
 
 	Optional<User> getUserByEmail(String email);

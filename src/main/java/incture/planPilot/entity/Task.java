@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import incture.planPilot.dto.TaskDto;
 import incture.planPilot.enums.TaskPriority;
@@ -19,6 +21,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Entity
@@ -45,8 +48,12 @@ public class Task {
 	
 	private boolean reminderSent = false;
 	
+	@Transient
+	private static final Logger logger = LoggerFactory.getLogger(Task.class);
+	
 	
 	public TaskDto getTaskDto() {
+		logger.trace("Converting Task with ID " + this.id + " to TaskDto");
 		TaskDto taskDto = new TaskDto();
 		taskDto.setId(this.id);
 		taskDto.setTitle(this.title);

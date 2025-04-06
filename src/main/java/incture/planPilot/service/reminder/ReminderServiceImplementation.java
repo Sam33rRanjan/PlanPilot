@@ -5,6 +5,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -26,21 +28,25 @@ public class ReminderServiceImplementation implements ReminderService {
 	@Autowired
 	private NotificationService notificationService;
 	
+	private static final Logger logger = LoggerFactory.getLogger(ReminderServiceImplementation.class);
+	
 	@Override
 	@Scheduled(fixedRate = 60000)
 	public void sendReminders() {
 		Date currentDate = new Date();
 		LocalDateTime reminderTimeLocalDateTime = LocalDateTime.now().plusHours(24);
 		Date reminderTime = Date.from(reminderTimeLocalDateTime.atZone(ZoneId.systemDefault()).toInstant());
-
+		
+		logger.info("Retrieving tasks due within the next 24 hours");
 		List<Task> tasks = taskRepository.findByDueDateBetween(currentDate, reminderTime).stream()
 				.filter(task -> task.getStatus().equals(TaskStatus.PENDING) || task.getStatus().equals(TaskStatus.IN_PROGRESS))
 				.filter(task -> task.isReminderSent() == false)
 				.toList();
 		
 		for (Task task : tasks) {
-			String responseString = emailService.sendEmail(task.getUser().getEmail(), "Task Reminder: " + task.getTitle());
-			if(responseString.equals("Email sent successfully")) {
+			String responseString = emailService.sendReminder(task.getUser().getEmail(), "Upcoming Task Reminder: " + task.getTitle());
+			if(responseString.equals("Reminder email sent successfully")) {
+				logger.info("Email reminder sent successfully to : " + task.getUser().getEmail());
 				NotificationDto notificationDto = new NotificationDto();
 				notificationDto.setDescription("You have a task due soon: " + task.getTitle());
 				notificationDto.setUserId(task.getUser().getId());
@@ -48,8 +54,9 @@ public class ReminderServiceImplementation implements ReminderService {
 				notificationService.sendNotification(notificationDto);
 				task.setReminderSent(true);
 				taskRepository.save(task);
+				logger.info("Notification reminder sent successfully to: " + task.getUser().getUsername());
 			} else {
-				System.out.println(responseString);
+				logger.error("Failed to send email reminder to: " + task.getUser().getEmail() + ". CAUSE: " + responseString);
 			}
 		}
 	}
@@ -58,23 +65,24 @@ public class ReminderServiceImplementation implements ReminderService {
 	@Scheduled(fixedRate = 86400000)
 	public void sendOverdueReminders() {
 		Date currentDate = new Date();
+		
+		logger.info("Retrieving overdue tasks");
 		List<Task> tasks = taskRepository.findByDueDateBefore(currentDate).stream()
 				.filter(task -> task.getStatus().equals(TaskStatus.PENDING) || task.getStatus().equals(TaskStatus.IN_PROGRESS))
-				.filter(task -> task.isReminderSent() == false)
 				.toList();
 		
 		for (Task task : tasks) {
-			String responseString = emailService.sendEmail(task.getUser().getEmail(), "Overdue Task Reminder: " + task.getTitle());
-			if(responseString.equals("Email sent successfully")) {
+			String responseString = emailService.sendOverdueReminder(task.getUser().getEmail(), "Overdue Task Reminder: " + task.getTitle());
+			if(responseString.equals("Reminder email sent successfully")) {
+				logger.info("Email overdue reminder sent successfully to : " + task.getUser().getEmail());
 				NotificationDto notificationDto = new NotificationDto();
 				notificationDto.setDescription("You have an overdue task: " + task.getTitle());
 				notificationDto.setUserId(task.getUser().getId());
 				notificationDto.setTaskId(task.getId());
 				notificationService.sendNotification(notificationDto);
-				task.setReminderSent(true);
-				taskRepository.save(task);
+				logger.info("Notification overdue reminder sent successfully to: " + task.getUser().getUsername());
 			} else {
-				System.out.println(responseString);
+				logger.error("Failed to send overdue email reminder to: " + task.getUser().getEmail() + ". CAUSE: " + responseString);
 			}
 		}
 	}
