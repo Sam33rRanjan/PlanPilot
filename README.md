@@ -91,4 +91,4 @@ Before you begin, ensure you have the following installed:
 -   **Modify Initial Account Details:**
     -   To change these details, navigate to `src/main/java/incture/planPilot/service/auth/AuthServiceImplementation.java`.
     -   Edit the values on lines 31, 32, and 33.
-    -   You can't create an admin account, so you have to edit these before running for the first time or edit these details using /api/user/updateUser endpoint.
+    -   You can't create an admin account, so you have to edit these before running for the first time or edit these details using `localhost:8080/api/user/updateUser` endpoint.
