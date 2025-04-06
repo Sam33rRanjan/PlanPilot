@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class EmailServiceImplementation implements EmailService {
 	@Autowired
 	private JavaMailSender mailSender;
 	
+	@Value("${spring.mail.username}")  
+    private String emailFrom;
+	
 	private static final Logger logger = LoggerFactory.getLogger(EmailServiceImplementation.class);
 	
 	@Override
@@ -26,7 +30,7 @@ public class EmailServiceImplementation implements EmailService {
 			logger.info("Sending reminder email to: " + to);
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setFrom("sameerranjan2003@gmail.com");
+			helper.setFrom(emailFrom);
 			helper.setTo(to);
 			helper.setSubject(subject);
 			try(var inputStream = EmailServiceImplementation.class.getResourceAsStream("/templates/reminder.html")) {
@@ -50,7 +54,7 @@ public class EmailServiceImplementation implements EmailService {
 			logger.info("Sending reminder email to: " + to);
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setFrom("sameerranjan2003@gmail.com");
+			helper.setFrom(emailFrom);
 			helper.setTo(to);
 			helper.setSubject(subject);
 			try(var inputStream = EmailServiceImplementation.class.getResourceAsStream("/templates/overdue.html")) {
@@ -73,7 +77,7 @@ public class EmailServiceImplementation implements EmailService {
 			logger.info("Sending assignment email to: " + to);
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
-			helper.setFrom("sameerranjan2003@gmail.com");
+			helper.setFrom(emailFrom);
 			helper.setTo(to);
 			helper.setSubject(subject);
 			try(var inputStream = EmailServiceImplementation.class.getResourceAsStream("/templates/assignment.html")) {
