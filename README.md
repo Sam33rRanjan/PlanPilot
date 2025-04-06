@@ -1,36 +1,94 @@
-01. Plan Pilot:  A smart task management system
+# Plan Pilot: Smart Task Management System
 
-02. Prerequisites - Java 21, MySQL 8, Eclipse Enterprise Edition IDE, Git
+Plan Pilot is a robust and efficient task management system designed to streamline your workflow and enhance productivity.
 
-03. How to run the application:
-      Step 1- Install Maven(Java EE) Integration for Eclipse from Eclipse Marketplace.
-      
-      Step 2- Install Spring Tools (aka Spring Tool Suite) from Eclipse Marketplace.
-      
-      Step 3- Install Lombok on your device and configure it for Eclipse IDE.
-      
-      Step 4- Create a database named 'planpilot' in MySQL database.
-      
-      Step 5- Install git on your device.
-      
-      Step 6- Create a directory named 'PlanPilot' in your device.
-      
-      Step 7- Navigate to the 'PlanPilot' directory in the terminal and run the command "git clone https://github.com/Sam33rRanjan/PlanPilot.git"
-      
-      Step 8- Launch Eclipse IDE and select 'import' from the 'file' section in the top left corner.
-      
-      Step 9- Search projects from folder and archive and select it.
-      Step 10- Select the 'PlanPilot' directory for the 'import source directory' at top of popup and click 'finish'.
-      
-      Step 11- Wait a little and let it download the required dependencies.
-      
-      Step 12- Navigate to the src/main/resources and open the 'application.properties' file.
-      
-      Step 13- Edit the fields on line 3 & 4 and set it to your MySQL username and password. Make sure you have created a database named 'planpilot' in MySQL server and it should be running on port no. 3306.
-      
-      Step 14- Edit the fields on line 17 & 18 and set it to your gmail id and app password. Make sure it is a GMAIL account. 
-      (How to generate an app password: Go to 'https://myaccount.google.com/' and search for 'App passwords' in the search bar. Select 'app passwords' and create a new app password and paste the 16-digit app password without any spaces in line 18)
-      
-      Step 15- If you run the program for the first time it will create an account with username 'Head Admin', email 'admin@gmail.com' and password 'admin' with admin privileges. If you want to change any of the above, navigate to               src/main/java/incture/planPilot/service/auth in the 'PlanPilot' directory and open the 'AuthServiceImplementation' file and edit the fields in line 31,32 and 33.
-      
-      Step 16- Run the applications as a Spring Boot Application. After you run the application the console will show the port number on which Tomcat server is running which is by default 8080.
+## Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Running the Application](#running-the-application)
+- [Initial Account Setup](#initial-account-setup)
+
+## Features
+
+- **Task Creation and Management:** Easily create, edit, and delete tasks.
+- **User Authentication:** Secure user authentication and authorization.
+- **Email Notifications:** Receive email notifications for task updates and reminders.
+- **Admin Privileges:** Manage all tasks.
+- **Database Integration:** Utilizes MySQL for persistent data storage.
+- **Spring Boot Application:** Built with Spring Boot for rapid development and deployment.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Java 21:** [Download Java 21](https://www.oracle.com/java/technologies/javase-jdk21-archive-downloads.html)
+- **MySQL 8:** [Download MySQL 8](https://dev.mysql.com/downloads/mysql/)
+- **Eclipse Enterprise Edition IDE:** [Download Eclipse EE](https://www.eclipse.org/downloads/packages/release/2023-12/r/eclipse-ide-enterprise-java-and-web-developers)
+- **Git:** [Download Git](https://git-scm.com/downloads)
+- **Maven Integration for Eclipse:** Install from Eclipse Marketplace.
+- **Spring Tools (Spring Tool Suite):** Install from Eclipse Marketplace.
+- **Lombok:** [Download Lombok](https://projectlombok.org/download) and configure it for Eclipse.
+
+## Installation
+
+1.  **Clone the Repository:**
+    ```terminal/git bash
+    git clone [https://github.com/Sam33rRanjan/PlanPilot.git](https://github.com/Sam33rRanjan/PlanPilot.git)
+    ```
+
+2.  **Import the Project into Eclipse:**
+    -   Open Eclipse IDE.
+    -   Go to `File` > `Import...`.
+    -   Select `Existing Maven Projects` or `Projects from Folder and Archive`.
+    -   Choose the `PlanPilot` directory as the import source.
+    -   Click `Finish`.
+
+3.  **Wait for Dependency Download:**
+    -   Eclipse will automatically download the required Maven dependencies.
+
+## Configuration
+
+1.  **MySQL Database Setup:**
+    -   Create a database named `planpilot` in your MySQL server.
+
+2.  **Configure `application.properties`:**
+    -   Navigate to `src/main/resources/application.properties`.
+    -   Update the MySQL username and password:
+        ```properties
+        spring.datasource.username=your_mysql_username
+        spring.datasource.password=your_mysql_password
+        ```
+    -   Ensure your MySQL server is running on port 3306.
+    -   Update the Gmail credentials for email notifications:
+        ```properties
+        spring.mail.username=your_gmail_address
+        spring.mail.password=your_gmail_app_password
+        ```
+    -   **Generate an App Password (for Gmail):**
+        -   Go to [Google Account Security](https://myaccount.google.com/apppasswords).
+        -   Create an app password and paste the 16-digit password in the `spring.mail.password` field.
+
+## Running the Application
+
+1.  **Run as Spring Boot Application:**
+    -   In Eclipse, right-click on the `PlanPilot` project.
+    -   Select `Run As` > `Spring Boot App`.
+
+2.  **Access the Application:**
+    -   The application will run on the Tomcat server, typically on port 8080.
+    -   Open your web browser and navigate to `http://localhost:8080`.
+
+## Initial Account Setup
+
+-   The first time you run the application, it will create an admin account:
+    -   **Username:** `Head Admin`
+    -   **Email:** `admin@gmail.com`
+    -   **Password:** `admin`
+
+-   **Modify Initial Account Details:**
+    -   To change these details, navigate to `src/main/java/incture/planPilot/service/auth/AuthServiceImplementation.java`.
+    -   Edit the values on lines 31, 32, and 33.
+    -   You can't create an admin account, so you have to edit these before running for first time or edit your details using /api/user/updateUser endpoint.
